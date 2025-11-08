@@ -10,9 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_07_153803) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_08_124818) do
+  create_table "companies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.integer "company_id"
+    t.datetime "created_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "name"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.integer "role", default: 2, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_users_on_company_id"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
   create_table "vehicles", force: :cascade do |t|
     t.string "color"
+    t.integer "company_id"
     t.datetime "created_at", null: false
     t.string "license_plate"
     t.string "make"
@@ -20,5 +43,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_07_153803) do
     t.datetime "updated_at", null: false
     t.string "vin"
     t.integer "year"
+    t.index ["company_id"], name: "index_vehicles_on_company_id"
   end
+
+  add_foreign_key "users", "companies"
+  add_foreign_key "vehicles", "companies"
 end

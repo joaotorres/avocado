@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Ethixly" %></title>
+    <title><%= content_for(:title) || "Avocado" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Ethixly">
+    <meta name="application-name" content="Avocado">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -23,8 +23,40 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-50">
+    <% if user_signed_in? %>
+      <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex">
+              <div class="flex-shrink-0 flex items-center">
+                <%= link_to "Avocado", root_path, class: "text-2xl font-bold text-green-600" %>
+              </div>
+              <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <%= link_to "Vehicles", vehicles_path, class: "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium #{current_page?(vehicles_path) ? 'border-green-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}" %>
+                <% if current_user.admin? %>
+                  <%= link_to "Companies", companies_path, class: "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium #{current_page?(companies_path) ? 'border-green-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}" %>
+                <% end %>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <span class="text-sm text-gray-700 mr-4">
+                  <%= current_user.name %>
+                  <span class="text-xs text-gray-500">(<%= current_user.role.capitalize %>)</span>
+                  <% if current_user.company.present? %>
+                    <span class="text-xs text-gray-500">- <%= current_user.company.name %></span>
+                  <% end %>
+                </span>
+              </div>
+              <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <main class="<%= user_signed_in? ? 'py-8' : 'container mx-auto mt-28 px-5 flex' %>">
       <%= yield %>
     </main>
   </body>

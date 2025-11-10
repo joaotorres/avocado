@@ -1,0 +1,15 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Assignment", company_assignment_path(@company, @assignment), class: "text-blue-600 hover:text-blue-900" %>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900">Edit Assignment</h1>
+    </div>
+
+    <div class="px-6 py-6">
+      <%= render "form", assignment: @assignment %>
+    </div>
+  </div>
+</div>

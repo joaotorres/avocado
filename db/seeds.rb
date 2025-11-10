@@ -87,4 +87,20 @@ end
 puts "\nSample vehicles created:"
 puts "  ACME Transport Ltd: #{company1.vehicles.count} vehicles"
 puts "  Swift Logistics Inc: #{company2.vehicles.count} vehicles"
+
+# Create sample assignments for company1
+assignment1 = Assignment.find_or_create_by!(driver: driver1, vehicle: vehicle1, date: Date.today) do |a|
+  a.company = company1
+end
+
+assignment2 = Assignment.find_or_create_by!(driver: driver1, vehicle: vehicle2, date: Date.tomorrow) do |a|
+  a.company = company1
+end
+
+assignment3 = Assignment.find_or_create_by!(driver: driver1, vehicle: vehicle1, date: Date.today + 2) do |a|
+  a.company = company1
+end
+
+puts "\nSample assignments created:"
+puts "  ACME Transport Ltd: #{company1.assignments.count} assignments"
 puts "\nSeeding completed successfully!"

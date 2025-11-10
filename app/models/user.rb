@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   belongs_to :company, optional: true
+  has_many :assignments, foreign_key: :driver_id, dependent: :destroy
 
   enum :role, { admin: 0, manager: 1, driver: 2 }, default: :driver
 

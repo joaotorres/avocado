@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_08_124818) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_10_140000) do
+  create_table "assignments", force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.integer "driver_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "vehicle_id", null: false
+    t.index ["company_id"], name: "index_assignments_on_company_id"
+    t.index ["driver_id", "date"], name: "index_assignments_on_driver_id_and_date", unique: true
+    t.index ["driver_id"], name: "index_assignments_on_driver_id"
+    t.index ["vehicle_id", "date"], name: "index_assignments_on_vehicle_id_and_date", unique: true
+    t.index ["vehicle_id"], name: "index_assignments_on_vehicle_id"
+  end
+
   create_table "companies", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
@@ -46,6 +60,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_08_124818) do
     t.index ["company_id"], name: "index_vehicles_on_company_id"
   end
 
+  add_foreign_key "assignments", "companies"
+  add_foreign_key "assignments", "users", column: "driver_id"
+  add_foreign_key "assignments", "vehicles"
   add_foreign_key "users", "companies"
   add_foreign_key "vehicles", "companies"
 end

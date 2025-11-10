@@ -1,5 +1,6 @@
 class Vehicle < ApplicationRecord
   belongs_to :company
+  has_many :assignments, dependent: :destroy
 
   validates :make, presence: true
   validates :model, presence: true

@@ -26,7 +26,15 @@
           <% @incidents.each do |incident| %>
             <tr class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= incident.date.strftime("%b %d, %Y") %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= incident.vehicle.make %> <%= incident.vehicle.model %> (<%= incident.vehicle.license_plate %>)</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <% if current_user.manager? || current_user.admin? %>
+                  <%= link_to company_vehicle_path(@company, incident.vehicle), class: "text-blue-600 hover:text-blue-900" do %>
+                    <%= incident.vehicle.make %> <%= incident.vehicle.model %> (<%= incident.vehicle.license_plate %>)
+                  <% end %>
+                <% else %>
+                  <%= incident.vehicle.make %> <%= incident.vehicle.model %> (<%= incident.vehicle.license_plate %>)
+                <% end %>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= incident.category_name %></td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -39,7 +47,13 @@
                   <%= incident.status.humanize %>
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= incident.reporter.name %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <% if current_user.manager? || current_user.admin? %>
+                  <%= link_to incident.reporter.name, company_driver_path(@company, incident.reporter), class: "text-blue-600 hover:text-blue-900" %>
+                <% else %>
+                  <%= incident.reporter.name %>
+                <% end %>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <%= link_to "View", company_incident_path(@company, incident), class: "text-blue-600 hover:text-blue-900 mr-3" %>
                 <% if policy(incident).update? %>

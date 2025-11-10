@@ -39,8 +39,15 @@
         <div class="sm:col-span-2">
           <dt class="text-sm font-medium text-gray-500">Vehicle</dt>
           <dd class="mt-1 text-sm text-gray-900">
-            <%= @incident.vehicle.year %> <%= @incident.vehicle.make %> <%= @incident.vehicle.model %>
-            <span class="text-xs text-gray-500">(<%= @incident.vehicle.license_plate %>)</span>
+            <% if current_user.manager? || current_user.admin? %>
+              <%= link_to company_vehicle_path(@company, @incident.vehicle), class: "text-blue-600 hover:text-blue-900" do %>
+                <%= @incident.vehicle.year %> <%= @incident.vehicle.make %> <%= @incident.vehicle.model %>
+                <span class="text-xs text-gray-500">(<%= @incident.vehicle.license_plate %>)</span>
+              <% end %>
+            <% else %>
+              <%= @incident.vehicle.year %> <%= @incident.vehicle.make %> <%= @incident.vehicle.model %>
+              <span class="text-xs text-gray-500">(<%= @incident.vehicle.license_plate %>)</span>
+            <% end %>
           </dd>
         </div>
 
@@ -52,8 +59,15 @@
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Reporter</dt>
           <dd class="mt-1 text-sm text-gray-900">
-            <%= @incident.reporter.name %>
-            <span class="text-xs text-gray-500">(<%= @incident.reporter.email %>)</span>
+            <% if current_user.manager? || current_user.admin? %>
+              <%= link_to company_driver_path(@company, @incident.reporter), class: "text-blue-600 hover:text-blue-900" do %>
+                <%= @incident.reporter.name %>
+                <span class="text-xs text-gray-500">(<%= @incident.reporter.email %>)</span>
+              <% end %>
+            <% else %>
+              <%= @incident.reporter.name %>
+              <span class="text-xs text-gray-500">(<%= @incident.reporter.email %>)</span>
+            <% end %>
           </dd>
         </div>
 

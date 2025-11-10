@@ -10,6 +10,10 @@
 # Ignore all environment files.
 /.env*
 
+# Ignore Rubymine and MacOS DS_Store files
+/.idea/*
+.DS_Store
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*

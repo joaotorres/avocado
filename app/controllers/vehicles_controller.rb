@@ -1,4 +1,5 @@
 class VehiclesController < ApplicationController
+  before_action :set_company
   before_action :set_vehicle, only: [:show, :edit, :update, :destroy]
   before_action :authorize_vehicle, except: [:index]
 
@@ -21,7 +22,7 @@ class VehiclesController < ApplicationController
     @vehicle = scoped_vehicles.new(vehicle_params)
 
     if @vehicle.save
-      redirect_to @vehicle, notice: "Vehicle was successfully created."
+      redirect_to [@company, @vehicle], notice: "Vehicle was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +30,7 @@ class VehiclesController < ApplicationController
 
   def update
     if @vehicle.update(vehicle_params)
-      redirect_to @vehicle, notice: "Vehicle was successfully updated."
+      redirect_to [@company, @vehicle], notice: "Vehicle was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -37,17 +38,22 @@ class VehiclesController < ApplicationController
 
   def destroy
     @vehicle.destroy
-    redirect_to vehicles_url, notice: "Vehicle was successfully destroyed."
+    redirect_to company_vehicles_url(@company), notice: "Vehicle was successfully destroyed."
   end
 
   private
 
-  def scoped_vehicles
-    if current_user.admin?
-      Vehicle.all
-    else
-      current_company.vehicles
+  def set_company
+    @company = Company.find(params[:company_id])
+    # Ensure non-admin users can only access their own company
+    unless current_user.admin? || @company == current_company
+      flash[:alert] = "You are not authorized to access this company."
+      redirect_to root_path
     end
+  end
+
+  def scoped_vehicles
+    @company.vehicles
   end
 
   def set_vehicle

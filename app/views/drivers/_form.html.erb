@@ -1,0 +1,45 @@
+<%# driver is a User model instance with role: driver %>
+<%= form_with(model: [@company, driver], url: driver.persisted? ? company_driver_path(@company, driver) : company_drivers_path(@company), class: "space-y-6") do |form| %>
+  <% if driver.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg" role="alert">
+      <h2 class="font-bold mb-2"><%= pluralize(driver.errors.count, "error") %> prohibited this driver from being saved:</h2>
+      <ul class="list-disc list-inside">
+        <% driver.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6">
+    <div>
+      <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :name, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <div>
+      <%= form.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.email_field :email, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <% if driver.new_record? || params[:action] == "edit" %>
+      <div>
+        <%= form.label :password, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.password_field :password, autocomplete: "new-password", class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+        <% if driver.persisted? %>
+          <p class="mt-1 text-xs text-gray-500">Leave blank to keep current password</p>
+        <% end %>
+      </div>
+
+      <div>
+        <%= form.label :password_confirmation, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.password_field :password_confirmation, autocomplete: "new-password", class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="flex justify-end space-x-3">
+    <%= link_to "Cancel", company_drivers_path(@company), class: "bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-150 ease-in-out" %>
+    <%= form.submit class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-150 ease-in-out cursor-pointer" %>
+  </div>
+<% end %>

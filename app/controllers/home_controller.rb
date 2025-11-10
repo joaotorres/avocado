@@ -7,7 +7,7 @@ class HomeController < ApplicationController
         redirect_to companies_path
       elsif current_company
         if current_user.manager?
-          redirect_to company_vehicles_path(current_company)
+          redirect_to company_drivers_path(current_company)
         elsif current_user.driver?
           redirect_to company_assignments_path(current_company)
         else

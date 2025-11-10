@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_10_140000) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_10_150000) do
   create_table "assignments", force: :cascade do |t|
     t.integer "company_id", null: false
     t.datetime "created_at", null: false
@@ -29,6 +29,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_10_140000) do
     t.datetime "created_at", null: false
     t.string "name"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "incidents", force: :cascade do |t|
+    t.integer "category", null: false
+    t.integer "company_id", null: false
+    t.decimal "cost", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.text "description", null: false
+    t.integer "reporter_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "vehicle_id", null: false
+    t.index ["company_id", "date"], name: "index_incidents_on_company_id_and_date"
+    t.index ["company_id"], name: "index_incidents_on_company_id"
+    t.index ["reporter_id"], name: "index_incidents_on_reporter_id"
+    t.index ["vehicle_id", "date"], name: "index_incidents_on_vehicle_id_and_date"
+    t.index ["vehicle_id"], name: "index_incidents_on_vehicle_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -63,6 +81,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_10_140000) do
   add_foreign_key "assignments", "companies"
   add_foreign_key "assignments", "users", column: "driver_id"
   add_foreign_key "assignments", "vehicles"
+  add_foreign_key "incidents", "companies"
+  add_foreign_key "incidents", "users", column: "reporter_id"
+  add_foreign_key "incidents", "vehicles"
   add_foreign_key "users", "companies"
   add_foreign_key "vehicles", "companies"
 end

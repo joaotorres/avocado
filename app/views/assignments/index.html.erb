@@ -19,6 +19,9 @@
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
+          <% if current_user.driver? %>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Incident</th>
+          <% end %>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
@@ -26,11 +29,22 @@
         <% if @assignments.any? %>
           <% @assignments.each do |assignment| %>
             <tr class="hover:bg-gray-50">
+              <% incident = current_user.driver? ? assignment.vehicle.incidents.find_by(date: assignment.date, reporter_id: current_user.id) : nil %>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= assignment.date.strftime("%B %d, %Y") %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= assignment.driver.name %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= assignment.vehicle.make %> <%= assignment.vehicle.model %> (<%= assignment.vehicle.license_plate %>)</td>
+              <% if current_user.driver? %>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <% if incident.present? %>
+                    <%= link_to incident.category_name, company_incident_path(@company, incident), class: "text-orange-600 hover:text-orange-900" %>
+                  <% end %>
+                </td>
+              <% end %>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <%= link_to "View", company_assignment_path(@company, assignment), class: "text-blue-600 hover:text-blue-900 mr-3" %>
+                <% if current_user.driver? && assignment.driver_id == current_user.id && incident.blank? %>
+                  <%= link_to "Report Incident", new_company_incident_path(@company, assignment_id: assignment.id), class: "text-orange-600 hover:text-orange-900 mr-3" %>
+                <% end %>
                 <% if policy(assignment).update? %>
                   <%= link_to "Edit", edit_company_assignment_path(@company, assignment), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
                 <% end %>
@@ -42,7 +56,7 @@
           <% end %>
         <% else %>
           <tr>
-            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+            <td colspan="<%= current_user.driver? ? 5 : 4 %>" class="px-6 py-8 text-center text-gray-500">
               No assignments found.
               <% if policy(Assignment).create? %>
                 <%= link_to "Create your first assignment", new_company_assignment_path(@company), class: "text-blue-600 hover:text-blue-900" %>.

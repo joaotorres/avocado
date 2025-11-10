@@ -5,15 +5,15 @@
 # Create Admin User
 admin = User.find_or_create_by!(email: "admin@example.com") do |user|
   user.name = "Admin User"
-  user.password = "password123"
-  user.password_confirmation = "password123"
+  user.password = "123123"
+  user.password_confirmation = "123123"
   user.role = :admin
   user.company_id = nil
 end
 
 puts "Admin user created:"
 puts "  Email: #{admin.email}"
-puts "  Password: password123"
+puts "  Password: 123123"
 puts "  Role: #{admin.role}"
 
 # Create sample companies
@@ -27,8 +27,8 @@ puts "  - #{company2.name}"
 # Create manager for company1
 manager1 = User.find_or_create_by!(email: "manager@acme.com") do |user|
   user.name = "John Manager"
-  user.password = "password123"
-  user.password_confirmation = "password123"
+  user.password = "123123"
+  user.password_confirmation = "123123"
   user.role = :manager
   user.company = company1
 end
@@ -36,8 +36,8 @@ end
 # Create driver for company1
 driver1 = User.find_or_create_by!(email: "driver@acme.com") do |user|
   user.name = "Jane Driver"
-  user.password = "password123"
-  user.password_confirmation = "password123"
+  user.password = "123123"
+  user.password_confirmation = "123123"
   user.role = :driver
   user.company = company1
 end
@@ -45,18 +45,18 @@ end
 # Create manager for company2
 manager2 = User.find_or_create_by!(email: "manager@swift.com") do |user|
   user.name = "Bob Manager"
-  user.password = "password123"
-  user.password_confirmation = "password123"
+  user.password = "123123"
+  user.password_confirmation = "123123"
   user.role = :manager
   user.company = company2
 end
 
 puts "\nSample users created:"
 puts "  ACME Transport Ltd:"
-puts "    - Manager: #{manager1.email} (password123)"
-puts "    - Driver: #{driver1.email} (password123)"
+puts "    - Manager: #{manager1.email} (123123)"
+puts "    - Driver: #{driver1.email} (123123)"
 puts "  Swift Logistics Inc:"
-puts "    - Manager: #{manager2.email} (password123)"
+puts "    - Manager: #{manager2.email} (123123)"
 
 # Create sample vehicles for company1
 vehicle1 = Vehicle.find_or_create_by!(license_plate: "AB12CDE", company: company1) do |v|
@@ -103,4 +103,44 @@ end
 
 puts "\nSample assignments created:"
 puts "  ACME Transport Ltd: #{company1.assignments.count} assignments"
+
+# Create sample incidents for company1 (matching assignment dates)
+incident1 = Incident.find_or_create_by!(
+  vehicle: vehicle1,
+  reporter: driver1,
+  date: Date.today,
+  category: :mechanical_issue
+) do |i|
+  i.company = company1
+  i.description = "Engine making unusual noise when accelerating. Needs inspection."
+  i.status = :open
+  i.cost = 0
+end
+
+incident2 = Incident.find_or_create_by!(
+  vehicle: vehicle2,
+  reporter: driver1,
+  date: Date.tomorrow,
+  category: :body_damage
+) do |i|
+  i.company = company1
+  i.description = "Minor dent on rear bumper from parking incident. No other vehicles involved."
+  i.status = :resolved
+  i.cost = 250.00
+end
+
+incident3 = Incident.find_or_create_by!(
+  vehicle: vehicle1,
+  reporter: driver1,
+  date: Date.today + 2,
+  category: :flat_tire
+) do |i|
+  i.company = company1
+  i.description = "Front passenger tire punctured by sharp object on road. Replaced with spare."
+  i.status = :resolved
+  i.cost = 85.00
+end
+
+puts "\nSample incidents created:"
+puts "  ACME Transport Ltd: #{company1.incidents.count} incidents"
 puts "\nSeeding completed successfully!"

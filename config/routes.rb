@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :assignments
     # drivers is a virtual resource for managing User records with role: driver
     resources :drivers, controller: 'drivers'
+    resources :incidents
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

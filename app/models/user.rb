@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   belongs_to :company, optional: true
   has_many :assignments, foreign_key: :driver_id, dependent: :destroy
+  has_many :reported_incidents, class_name: "Incident", foreign_key: :reporter_id, dependent: :restrict_with_error
 
   enum :role, { admin: 0, manager: 1, driver: 2 }, default: :driver
 

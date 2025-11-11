@@ -1,0 +1,84 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Cost Dashboard", company_cost_dashboard_path(@company), class: "text-blue-600 hover:text-blue-900" %>
+  </div>
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-4xl font-bold text-gray-900"><%= @date.strftime("%B %Y") %> - Incident Costs</h1>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-gray-900">Summary</h2>
+        <div class="text-right">
+          <p class="text-sm text-gray-500">Total Incidents: <%= @incidents.count %></p>
+          <p class="text-lg font-bold text-red-600">Total Cost: £<%= number_with_precision(@total_cost, precision: 2, delimiter: ',') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if @incidents.any? %>
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reporter</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @incidents.each do |incident| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <%= incident.date.strftime("%b %d, %Y") %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= link_to company_vehicle_path(@company, incident.vehicle), class: "text-blue-600 hover:text-blue-900" do %>
+                  <%= incident.vehicle.make %> <%= incident.vehicle.model %> (<%= incident.vehicle.license_plate %>)
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= incident.category_name %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                  <%= case incident.status
+                      when 'open' then 'bg-yellow-100 text-yellow-800'
+                      when 'in_progress' then 'bg-blue-100 text-blue-800'
+                      when 'resolved' then 'bg-green-100 text-green-800'
+                      when 'dismissed' then 'bg-gray-100 text-gray-800'
+                      end %>">
+                  <%= incident.status.humanize %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= link_to incident.reporter.name, company_driver_path(@company, incident.reporter), class: "text-blue-600 hover:text-blue-900" %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium <%= incident.cost.present? && incident.cost > 0 ? 'text-red-600' : 'text-gray-500' %>">
+                <% if incident.cost.present? %>
+                  £<%= number_with_precision(incident.cost, precision: 2, delimiter: ',') %>
+                <% else %>
+                  £0.00
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <%= link_to "View", company_incident_path(@company, incident), class: "text-blue-600 hover:text-blue-900" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-white shadow-md rounded-lg p-8">
+      <p class="text-gray-500 text-center">No incidents for this month.</p>
+    </div>
+  <% end %>
+</div>

@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     # drivers is a virtual resource for managing User records with role: driver
     resources :drivers, controller: 'drivers'
     resources :incidents
+    # cost dashboard for managers
+    get 'cost_dashboard', to: 'cost_dashboard#index', as: :cost_dashboard
+    get 'cost_dashboard/:year/:month', to: 'cost_dashboard#month', as: :cost_dashboard_month
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
